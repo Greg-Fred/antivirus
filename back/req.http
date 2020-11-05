@@ -1,0 +1,25 @@
+POST http://localhost:3000/auth/signup http/1.1
+content-type: application/json
+
+{
+
+    "email": "b@mail.com",
+    "name": "test2",
+    "password": "azerty"
+}
+
+###
+GET http://localhost:3000/auth/signup  HTTP/1.1
+
+###
+
+POST http://localhost:3000/auth/login  HTTP/1.1
+content-type: application/json
+
+{
+
+    "email": "a@mail.com",
+    "name": "dsojnvosdn",
+    "password": "azerty"
+}
+
