@@ -2,7 +2,8 @@ require('dotenv').config({ path: '.env' });
 const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST)
 
 const app = express();
 
