@@ -2,9 +2,8 @@ POST http://localhost:3000/auth/signup http/1.1
 content-type: application/json
 
 {
-
-    "email": "b@mail.com",
-    "name": "test2",
+    "email": "gregou@mail.com",
+    "name": "grego",
     "password": "azerty"
 }
 
@@ -18,8 +17,21 @@ content-type: application/json
 
 {
 
-    "email": "a@mail.com",
-    "name": "dsojnvosdn",
+    "email": "gregou@mail.com",
+    "name": "grego",
     "password": "azerty"
 }
+
+###
+
+POST http://localhost:3000/virus/upload HTTP/1.1
+Content-Type: multipart/form-data; boundary=---bound
+
+---bound
+Content-Disposition: form-data; name="image"; filename="image.png"
+Content-Type: image/png
+
+
+< ./image/image.png
+---bound--
 
