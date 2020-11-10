@@ -1,11 +1,17 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 exports.signup = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then(hash => {
+      console.log(hash);
+      console.log(req.body.email);
+      console.log(req.body.name);
       const user = new User({
+        // ici j'ai rajouté un champ id, attention à voir selon le tuto
+        _id: new mongoose.Types.ObjectId(),
         email: req.body.email,
         name: req.body.name,
         password: hash
