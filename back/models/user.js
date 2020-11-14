@@ -11,8 +11,5 @@ const UserSchema = Schema({
   virus: [{ type: Schema.Types.ObjectId, ref: 'Virus'}]
 });
 
-//voir comment faire la relation One to Many entre user et Virus.
-// Attention j'ai changé le système d'Id dans les models et probablement dans le controller de user
-
 UserSchema.plugin(uniqueValidator);
 module.exports = mongoose.model('User', UserSchema);
