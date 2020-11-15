@@ -2,10 +2,6 @@ const User = require('../models/user');
 const Virus = require('../models/virus');
 const moment = require('moment');
 
-//REMARQUE : Il peut être bon de récupérer un délai pour que l'utilisateur
-// puisse savoir combien de temps il a à attendre.
-// Je m'en occupe pour la prochaine fois.
-
 
 /* BasicLimitations :
 Simplement un objet dans lequel je stock les valeurs des restrictions qui sont ensuite
@@ -20,7 +16,6 @@ const basicLimitations = {
 };
 
 
-
 /* METHODE filtrageDesDates :
 On filtre ici l'array de virus récupéré de l'utilisation.
 La methode filtreDesDates va vérifier l'écart, en heure, entre la date d'aujourdhui et la date de l'upload de chacun des virus.
@@ -31,12 +26,17 @@ J'utilise un module "moment.js" pour faciliter la gestion des formats.
 const filtrageDesDates = (virus) => {
   const dateDuJour = moment(Date.now()).format();
   const dateDuVirus = moment(virus.post_date).format();
-  if (moment.utc(moment(dateDuJour).diff(moment(dateDuVirus))).format("HH") <= basicLimitations.uploadTimeout) {
-    return true;
+  const lastTime = moment.utc(moment(dateDuJour).diff(moment(dateDuVirus))).format("HH");
+  if (lastTime <= basicLimitations.uploadTimeout) {
+    return {
+      virus: virus,
+      timed: lastTime
+    };
   } else {
     return false;
   }
 };
+
 
 
 /* METHODE virusPerDayLimitation :
@@ -46,10 +46,15 @@ Elle s'occupe d'extraire la liste des virus à partir de l'id de l'utilisateur �
 const virusPerDayLimitation = async (id) => {
   try {
     const virusList = await Virus.find({ user: id });
-    const virusDujour = virusList.filter(filtrageDesDates);
+    const virusDujour = virusList.map(filtrageDesDates);
+    // lastUpload selectionne le plus ancien des virus upload et récupère le temps qu'il reste pour atteindre 24h depuis son upload. Libérant ainsi une place pour un nouvel upload.
+    const lastUpload = 24 - Math.min.apply(null, virusDujour.map( virus => virus.timed));
     if (virusDujour.length >= basicLimitations.perDayupload) {
-      // REMARQUE ! on peut implémenter ici un compteur pour le prochain upload
-      return false;
+      // Du coup, pour remonter l'info je dois renvoyer un objet avec le nombre d'heure restante, ce qu'on trouve dans le timed.
+      return {
+        response: false,
+        timed: lastUpload
+      };
     } else {
       return true;
     }
@@ -77,8 +82,10 @@ module.exports = async (req, res, next) => {
   }
   try {
     const virusUploadLimit = await virusPerDayLimitation(req.body.userId);
-    if (virusUploadLimit === false) {
-      res.status(401).json({ message: 'Vous avez atteind votre limite d`upload' });
+    // Vu que j'ai modifié le return avec un objet je dois ici pour retrouver le bouleen, c'est poussif mais ça marche.
+    if (virusUploadLimit.response === false) {
+    // ce qui me permet ici de récupérer dans l'objet le nombre d'heure restante. Que j'affiche dans la réponse au client.
+      res.status(401).json({ message: `Vous avez atteind votre limite d'upload. Upload libre dans ${parseInt(virusUploadLimit.timed, 10)} heures` });
     } else if (req.file.size > basicLimitations.size) {
       res.status(401).json({message: 'Vous n`êtes pas autorisé à envoyé des fichiers de cette taille !'});
       } else {
