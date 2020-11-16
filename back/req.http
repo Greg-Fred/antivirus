@@ -1,3 +1,4 @@
+
 @host = http://localhost:3000
 
 ###
@@ -31,12 +32,12 @@ content-type: application/json
     "password": "azerty"
 }
 
-###
 
+###
 ////////////////Compte PRO////////////////////
 //////////////////////////////////////////////
-//CLICK
 # @name login
+//CLICK
 POST {{host}}/auth/login  HTTP/1.1
 content-type: application/json
 
@@ -54,6 +55,7 @@ content-type: application/json
 
 @authToken = {{login.response.body.token}}
 @userId = {{login.response.body.userId}}
+//CLICK
 POST {{host}}/virus/upload HTTP/1.1
 Authorization: Bearer {{authToken}}
 Content-Type: multipart/form-data; boundary=----grego
