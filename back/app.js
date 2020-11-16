@@ -2,10 +2,18 @@ require('dotenv').config({ path: '.env' });
 const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user');
-const virusRoutes = require('./routes/virus');
+const buyRoutes = require('./routes/buy');
 const mongoose = require('mongoose');
+const Publishable_Key = 'pk_test_51HkSdNDXZyAsNyKOasOLrBiGaAbgoxHb8WzeD1fMyxhcFHXEWOOnKIuUAb0GR9LB5h3BsVkEUB38RcNVvZrk8WOd00OfoO2PLu'
+const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
+const path = require('path');
+const virusRoutes = require('./routes/virus');
+
 
 const app = express();
+
+// express static utilisé pour tester des pages statiques dans static_stripe_views
+app.use(express.static('static_stripe_views'));
 
 mongoose.connect(process.env.DATABASE,
   {
@@ -23,11 +31,19 @@ app.use((req, res, next) => {
   next();
 });
 
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
+
 app.use(bodyParser.json());
 app.use('/auth', userRoutes);
+app.use('/buy', buyRoutes)
 app.use('/virus', virusRoutes);
 
-
+// get pour home
+app.get('/', function (req, res) {
+  // res render 'home' renvoit vers une vue ejs dans le dossier views
+  res.render('home')
+})
 
 
 module.exports = app;
