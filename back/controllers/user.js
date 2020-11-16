@@ -1,11 +1,15 @@
 const User = require('../models/user');
+// bcrypt est la pour hasher et sécuriser les échanges de password
 const bcrypt = require('bcrypt');
+// jsonwebtoken sert à générer et gérer les tokens
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 exports.signup = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then(hash => {
       const user = new User({
+        _id: new mongoose.Types.ObjectId(),
         email: req.body.email,
         name: req.body.name,
         password: hash
@@ -28,7 +32,6 @@ exports.login = (req, res, next) => {
           if (!valid) {
             return res.status(401).json({ error: 'Mot de passe incorrect' })
           }
-          console.log(valid);
           res.status(200).json({
             userId: user._id,
             token: jwt.sign(

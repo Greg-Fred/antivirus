@@ -1,25 +1,72 @@
-POST http://localhost:3000/auth/signup http/1.1
+
+@host = http://localhost:3000
+
+###
+///////////////// INSCRIPTION !!...........ETAPE 1
+//CLICK
+POST {{host}}/auth/signup http/1.1
+content-type: application/json
+
+{
+    "email": //"tebi@mail.com",
+    "name": "proGREG",
+    "password": "azerty",
+    "role": //"pro"
+}
+
+
+###
+//////////////////SE LOGGER !!.............ETAPE 2
+
+/////////////////Compte BASIC/////////////////
+//////////////////////////////////////////////
+//CLICK
+# @name login
+POST {{host}}/auth/login  HTTP/1.1
 content-type: application/json
 
 {
 
-    "email": "b@mail.com",
-    "name": "test2",
+    "email": "bonjour@mail.com",
+    "name": "greggo",
     "password": "azerty"
 }
 
-###
-GET http://localhost:3000/auth/signup  HTTP/1.1
 
 ###
-
-POST http://localhost:3000/auth/login  HTTP/1.1
+////////////////Compte PRO////////////////////
+//////////////////////////////////////////////
+# @name login
+//CLICK
+POST {{host}}/auth/login  HTTP/1.1
 content-type: application/json
 
 {
 
-    "email": "a@mail.com",
-    "name": "dsojnvosdn",
+    "email": "tebi@mail.com",
+    "name": "proGREG",
     "password": "azerty"
 }
 
+
+###
+///.......................................ETAPE 3
+/////////////////POST VIRUS(se logger avant///
+
+@authToken = {{login.response.body.token}}
+@userId = {{login.response.body.userId}}
+//CLICK
+POST {{host}}/virus/upload HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=----grego
+
+------grego
+Content-Disposition: form-data; name="userId"
+
+{{userId}}
+------grego
+Content-Disposition: form-data; name="image"; filename = "imange.png"
+Content-Type: image/png
+
+< ./image/image.png
+------grego--

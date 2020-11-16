@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const Publishable_Key = 'pk_test_51HkSdNDXZyAsNyKOasOLrBiGaAbgoxHb8WzeD1fMyxhcFHXEWOOnKIuUAb0GR9LB5h3BsVkEUB38RcNVvZrk8WOd00OfoO2PLu'
 const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
 const path = require('path');
+const virusRoutes = require('./routes/virus');
+
 
 const app = express();
 
@@ -33,10 +35,9 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 app.use(bodyParser.json());
-
 app.use('/auth', userRoutes);
-
 app.use('/buy', buyRoutes)
+app.use('/virus', virusRoutes);
 
 // get pour home
 app.get('/', function (req, res) {
@@ -46,3 +47,4 @@ app.get('/', function (req, res) {
 
 
 module.exports = app;
+
