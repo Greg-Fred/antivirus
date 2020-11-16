@@ -2,20 +2,25 @@
 @host = http://localhost:3000
 
 ###
-// Inscription !!
+///////////////// INSCRIPTION !!...........ETAPE 1
+//CLICK
 POST {{host}}/auth/signup http/1.1
 content-type: application/json
 
 {
-    "email": "bonjour@mail.com",
-    "name": "greggo",
-    "password": "azerty"
+    "email": //"tebi@mail.com",
+    "name": "proGREG",
+    "password": "azerty",
+    "role": //"pro"
 }
 
 
 ###
-// Se logger !!
+//////////////////SE LOGGER !!.............ETAPE 2
 
+/////////////////Compte BASIC/////////////////
+//////////////////////////////////////////////
+//CLICK
 # @name login
 POST {{host}}/auth/login  HTTP/1.1
 content-type: application/json
@@ -27,10 +32,30 @@ content-type: application/json
     "password": "azerty"
 }
 
+
 ###
-// Ajouter un virus (se logger avant ^) !!
+////////////////Compte PRO////////////////////
+//////////////////////////////////////////////
+# @name login
+//CLICK
+POST {{host}}/auth/login  HTTP/1.1
+content-type: application/json
+
+{
+
+    "email": "tebi@mail.com",
+    "name": "proGREG",
+    "password": "azerty"
+}
+
+
+###
+///.......................................ETAPE 3
+/////////////////POST VIRUS(se logger avant///
+
 @authToken = {{login.response.body.token}}
 @userId = {{login.response.body.userId}}
+//CLICK
 POST {{host}}/virus/upload HTTP/1.1
 Authorization: Bearer {{authToken}}
 Content-Type: multipart/form-data; boundary=----grego
