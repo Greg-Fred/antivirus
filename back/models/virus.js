@@ -9,6 +9,5 @@ const VirusSchema = Schema({
   post_date: {type: Date, default: Date.now}
 });
 
-module.exports = mongoose.model('Virus', VirusSchema);
+module.exports = mongoose.model('Virus', VirusSchema, 'Virus');
 
-// Ici j'ai rajouté un système d'Id. Attention Mongo db générait déja un id. A voir dans le tuto.

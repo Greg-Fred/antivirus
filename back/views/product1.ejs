@@ -28,9 +28,13 @@
         method: "POST",
       })
         .then(function (response) {
+          console.log('OOOOOLLLLLLLLLLLEE');
+          console.log(response);
           return response.json();
         })
         .then(function (session) {
+          console.log('OOOOOOOOOOOOOOOOOO');
+          console.log(session);
           return stripe.redirectToCheckout({ sessionId: session.id });
         })
         .then(function (result) {
