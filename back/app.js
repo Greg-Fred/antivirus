@@ -9,6 +9,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
 const path = require('path');
 const virusRoutes = require('./routes/virus');
 
+// require CORS ?? cross origin attack
 
 const app = express();
 
