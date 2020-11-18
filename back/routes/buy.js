@@ -12,6 +12,9 @@ router.get('/product1', function (req, res) {
 const YOUR_DOMAIN = 'http://localhost:3000';
 
 router.post('/product1/create-session', async (req, res) => {
+  console.log('OLAAAAAAA');
+  console.log(req);
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: [
@@ -31,6 +34,8 @@ router.post('/product1/create-session', async (req, res) => {
     success_url: `${YOUR_DOMAIN}/success.html`,
     cancel_url: `${YOUR_DOMAIN}/cancel.html`,
   });
+  console.log('MMMMOOOOOOOOOOOOOOOOO');
+  console.log(session);
   res.json({ id: session.id });
 });
 
