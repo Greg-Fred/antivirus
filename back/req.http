@@ -8,10 +8,10 @@ POST {{host}}/auth/signup http/1.1
 content-type: application/json
 
 {
-    "email": //"tebi@mail.com",
+    "email": "greg@exemple.com",
     "name": "proGREG",
-    "password": "azerty",
-    "role": //"pro"
+    "password": "azerty"
+    //"role": "pro"
 }
 
 
