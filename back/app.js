@@ -11,7 +11,9 @@ const path = require('path');
 const virusRoutes = require('./routes/virus');
 const webhookRoute = require('./routes/webhook');
 
+// require CORS ?? cross origin attack
 // CONFIG /////////////////////////////////////
+
 
 const app = express();
 

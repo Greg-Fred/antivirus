@@ -28,8 +28,8 @@
         method: "POST",
       })
         .then(function (response) {
+          console.log(response)
           console.log('OOOOOLLLLLLLLLLLEE');
-          console.log(response);
           return response.json();
         })
         .then(function (session) {
