@@ -9,6 +9,7 @@ const Publishable_Key = 'pk_test_51HkSdNDXZyAsNyKOasOLrBiGaAbgoxHb8WzeD1fMyxhcFH
 const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
 const path = require('path');
 const virusRoutes = require('./routes/virus');
+const webhookRoute = require('./routes/webhook');
 
 // CONFIG /////////////////////////////////////
 
@@ -37,17 +38,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // NOS ROUTES ////////////////////////////////////////////////////:
-
+app.use('/stripe', bodyParser.raw({ type: 'application/json' }), webhookRoute);
 app.use(bodyParser.json());
 app.use('/auth', userRoutes);
 app.use('/buy', buyRoutes)
 app.use('/virus', virusRoutes);
 app.use('/product', productRoutes);
-// get pour home
-app.get('/', function (req, res) {
-  // res render 'home' renvoit vers une vue ejs dans le dossier views
-  res.render('home')
-})
+
 
 
 module.exports = app;
