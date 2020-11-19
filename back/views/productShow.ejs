@@ -1,0 +1,82 @@
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></head>
+<div class="container">
+  <div class="col">
+    <h1>this is my product</h1>
+    <br>
+    <%=product.name  %>
+    <br>
+    <%=product.price  %>
+    <br>
+    <%=product.description  %>
+    <br>
+    <img src="<%= product.image %>" alt="">
+    </div>
+  </div>
+  <div>
+    <h2>Payer par carte bancaire</h2>
+    <form>
+      <label for="email-input">E-mail</label>
+      <input type="email", required id="email-input">
+      <label for="card-element">Informations de la carte</label>
+      <div id="card-element"></div>
+      <div id="card-errors" role="alert"></div>
+      <div id="card-success" role="alert"></div>
+      <button type="submit" id="submit">Acheter </button>
+    </form>
+    <script type="text/javascript" src="https://js.stripe.com/v3"></script>
+    <script>
+
+    const stripe = Stripe("<%= key %>")
+    const elements = stripe.elements()
+    const card = elements.create('card')
+    const displayError = document.querySelector('#card-errors')
+    const displaySuccess = document.querySelector('#card-success')
+    const form = document.querySelector('form')
+    const emailInput = document.querySelector('#email-input')
+    const submitButton = document.querySelector('#submit')
+    const secret = document.querySelector('#secret')
+
+
+    card.mount('#card-element')
+
+    card.addEventListener('change', ({ error }) => {
+      if (error) {
+        displayError.textContent = error.message
+      } else {
+        displayError.textContent = ''
+      }
+    })
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+
+      if (!submitButton.hasAttribute('disabled')) {
+        submitButton.setAttribute('disabled', true)
+        const result = await stripe.confirmCardPayment("<%=client_secret %>", {
+          payment_method: {
+            card,
+            billing_details: {
+              email: emailInput.value
+            }
+          }
+        })
+
+        if(result.error) {
+          displayError.textContent = result.error.message
+        } else {
+          if (result.paymentIntent.status === 'succeeded') {
+            displaySuccess.textContent = 'Paiement accepté'
+            form.reset()
+            card.clear()
+          }
+        }
+
+        submitButton.removeAttribute('disabled')
+      }
+    })
+
+    </script>
+  </div>
+
