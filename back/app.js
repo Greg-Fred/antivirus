@@ -5,11 +5,12 @@ const userRoutes = require('./routes/user');
 const buyRoutes = require('./routes/buy');
 const mongoose = require('mongoose');
 const productRoutes = require('./routes/product');
-const Publishable_Key = 'pk_test_51HkSdNDXZyAsNyKOasOLrBiGaAbgoxHb8WzeD1fMyxhcFHXEWOOnKIuUAb0GR9LB5h3BsVkEUB38RcNVvZrk8WOd00OfoO2PLu'
+const Publishable_Key = (process.env.PUBLISHABLE_KEY);
 const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
 const path = require('path');
 const virusRoutes = require('./routes/virus');
 const webhookRoute = require('./routes/webhook');
+const { body, validationResult } = require('express-validator');
 
 // require CORS ?? cross origin attack
 // CONFIG /////////////////////////////////////
@@ -18,7 +19,7 @@ const webhookRoute = require('./routes/webhook');
 const app = express();
 
 // express static utilisé pour tester des pages statiques dans static_stripe_views
-app.use(express.static('static_stripe_views'));
+// app.use(express.static('static_stripe_views'));
 
 mongoose.connect(process.env.DATABASE,
   {
@@ -40,10 +41,16 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // NOS ROUTES ////////////////////////////////////////////////////:
+
+
 app.use('/stripe', bodyParser.raw({ type: 'application/json' }), webhookRoute);
 app.use(bodyParser.json());
+
+app.get("/",  (req, res) => {
+  res.render('home.ejs');
+});
 app.use('/auth', userRoutes);
-app.use('/buy', buyRoutes)
+app.use('/buy', buyRoutes);
 app.use('/virus', virusRoutes);
 app.use('/product', productRoutes);
 
