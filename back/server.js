@@ -48,18 +48,18 @@ server.on('listening', () => {
 server.listen(port);
 
 
-// ngrok.connect({
-//   proto: 'http',
-//   addr: process.env.PORT
-// }, (err, url) => {
-//   if (err) {
-//     console.error('Error while connecting Ngrok', err);
-//     return new Error('Ngrok Failed');
-//   } else  {
-//     console.log('Tunnel Created -> ', url);
-//     console.log('Tunnel Inspector ->  http://127.0.0.1:4040');
-//   }
-// });
+ngrok.connect({
+  proto: 'http',
+  addr: process.env.PORT
+}, (err, url) => {
+  if (err) {
+    console.error('Error while connecting Ngrok', err);
+    return new Error('Ngrok Failed');
+  } else  {
+    console.log('Tunnel Created -> ', url);
+    console.log('Tunnel Inspector ->  http://127.0.0.1:4040');
+  }
+});
 
 
 // pour checker les erreurs unhandledRejection (catch error manquant, )
