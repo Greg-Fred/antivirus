@@ -17,5 +17,3 @@ const multerConfig = multer({
 
 module.exports = multerConfig.single("image");
 
-// filtrer en fontion de la taille du fichier
-// et faire passer le message d'erreur à la vue

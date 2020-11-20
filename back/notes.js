@@ -1,10 +1,8 @@
 /* Brouillon pour communiquer :
 
-********* Legend de note.js
+********* Legende de note.js
 Pour être clair, quand du texte est écrit entre : | ... | cela renvoie à une commande de terminal.
 La commande étant ce qui est écrit entre deux barres => | ... |
-
-
 
 
 ++ En cas d'erreur serveur de type :

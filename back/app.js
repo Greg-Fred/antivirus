@@ -2,24 +2,20 @@ require('dotenv').config({ path: '.env' });
 const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user');
-const buyRoutes = require('./routes/buy');
 const mongoose = require('mongoose');
 const productRoutes = require('./routes/product');
-const Publishable_Key = 'pk_test_51HkSdNDXZyAsNyKOasOLrBiGaAbgoxHb8WzeD1fMyxhcFHXEWOOnKIuUAb0GR9LB5h3BsVkEUB38RcNVvZrk8WOd00OfoO2PLu'
-const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
 const path = require('path');
 const virusRoutes = require('./routes/virus');
 const webhookRoute = require('./routes/webhook');
 
-// require CORS ?? cross origin attack
-// CONFIG /////////////////////////////////////
-
-
 const app = express();
 
-// express static utilisé pour tester des pages statiques dans static_stripe_views
+///// CONFIGURATION
+
+// 'Express static' sert à l'utilisation de pages statiques dans le dossier 'static_stripe_views'
 app.use(express.static('static_stripe_views'));
 
+// On connect le module mongoose à la DB
 mongoose.connect(process.env.DATABASE,
   {
     useNewUrlParser: true,
@@ -28,7 +24,7 @@ mongoose.connect(process.env.DATABASE,
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-
+// On configure ici les headers de réponse - CORS - il nous faudra comprendre plus en détail ***
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -36,17 +32,23 @@ app.use((req, res, next) => {
   next();
 });
 
+// On configure ici le chemin des vues et le système de gestion des vues (ejs)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// NOS ROUTES ////////////////////////////////////////////////////:
+
+///// NOS ROUTES
+
+
+// Cette route gère le webhook de stripe. Pour des raisons propre à stripe nous devons appliquer bodyParser.raw à la requête. Ce qui explique sa position 'au dessus' du app.use(bodyParser.json()) suivant qui s'applique à toute les requêtes. A travailler... ***
 app.use('/stripe', bodyParser.raw({ type: 'application/json' }), webhookRoute);
+// On bodyPaser toute les requêtes ici - Il nous faudra comprendre plus précisément l'utiliter de la chose ***
 app.use(bodyParser.json());
+
+
 app.use('/auth', userRoutes);
-app.use('/buy', buyRoutes)
 app.use('/virus', virusRoutes);
 app.use('/product', productRoutes);
-
 
 
 module.exports = app;

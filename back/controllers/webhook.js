@@ -1,8 +1,12 @@
 
+/* /// COMMENTAIRE
+
+Notre Webhook pour stripe - Fonctionnel, la structure est la mais elle est à peupler, c'est encore une coquille vide.
+*/
+
 module.exports = (req, res, next) => {
   let event;
-  console.log('DEBUG :' + req.body);
-  console.log('ENCULE !!!!!!!!!!!!!!!!!!!!');
+  console.log('La requête de stripe ____ :' + req.body);
 
   try {
     event = JSON.parse(req.body);
@@ -29,5 +33,6 @@ module.exports = (req, res, next) => {
   }
 
   // Return a response to acknowledge receipt of the event
+  console.log("Le webhook fonctionne, c'est pour cette raison que ce message apparait :D !");
   res.status(200).json({ received: true });
 };

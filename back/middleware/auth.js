@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); // Module qui génère et gère les tokens
 
 module.exports = (req, res, next) => {
   try {

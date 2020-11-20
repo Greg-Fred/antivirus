@@ -1,7 +1,11 @@
 const User = require('../models/user');
 const Virus = require('../models/virus');
-const moment = require('moment');
+const moment = require('moment'); // Le module moment permet une utilisation plus souple du système de date
 
+
+/* COMMENTAIRE : Notre système de vérification des limitations d'upload de fichier en fonction du role utilisateur.
+  On va laisser les commentaires de fred qui tente d'expliquer son code.
+*/
 
 /* BasicLimitations :
 Simplement un objet dans lequel je stock les valeurs des restrictions qui sont ensuite
@@ -26,11 +30,11 @@ J'utilise un module "moment.js" pour faciliter la gestion des formats.
 const filtrageDesDates = (virus) => {
   const dateDuJour = moment(Date.now()).format();
   const dateDuVirus = moment(virus.post_date).format();
-  const lastTime = moment.utc(moment(dateDuJour).diff(moment(dateDuVirus))).format("HH");
-  if (lastTime <= basicLimitations.uploadTimeout) {
+  const lastUploadTime = moment.utc(moment(dateDuJour).diff(moment(dateDuVirus))).format("HH");
+  if (lastUploadTime <= basicLimitations.uploadTimeout) {
     return {
       virus: virus,
-      timed: lastTime
+      timed: lastUploadTime
     };
   } else {
     return false;
@@ -49,12 +53,12 @@ const virusPerDayLimitation = async (id) => {
     const virusList = await Virus.find({ user: id });
     const virusDujour = virusList.map(filtrageDesDates);
     // lastUpload selectionne le plus ancien des virus upload et récupère le temps qu'il reste pour atteindre 24h depuis son upload. Libérant ainsi une place pour un nouvel upload.
-    const lastUpload = 24 - Math.min.apply(null, virusDujour.map( virus => virus.timed));
+    const timeBeforeNextUpload = 24 - Math.min.apply(null, virusDujour.map(virus => virus.timed));
     if (virusDujour.length >= basicLimitations.perDayupload) {
       // Du coup, pour remonter l'info je dois renvoyer un objet avec le nombre d'heure restante, ce qu'on trouve dans le timed.
       return {
         response: false,
-        timed: lastUpload
+        timed: timeBeforeNextUpload
       };
     } else {
       return true;
@@ -74,7 +78,6 @@ Ensuite je fais un if/elsif/else pour vérifier :
 2. Que la taille ne dépasse pas la limite
 3. Et le else pour dire que c'est ok on passe à la suite.
 */
-
 module.exports = async (req, res, next) => {
   const user = await User.findById(req.body.userId);
   if (user.role === "pro") {
@@ -85,16 +88,16 @@ module.exports = async (req, res, next) => {
     const virusUploadLimit = await virusPerDayLimitation(req.body.userId);
     // Vu que j'ai modifié le return avec un objet je dois ici pour retrouver le bouleen, c'est poussif mais ça marche.
     if (virusUploadLimit.response === false) {
-    // ce qui me permet ici de récupérer dans l'objet le nombre d'heure restante. Que j'affiche dans la réponse au client.
+      // ce qui me permet ici de récupérer dans l'objet le nombre d'heure restante. Que j'affiche dans la réponse au client.
       res.status(401).json({ message: `Vous avez atteind votre limite d'upload. Upload libre dans ${parseInt(virusUploadLimit.timed, 10)} heures` });
     } else if (req.file.size > basicLimitations.size) {
-      res.status(401).json({message: 'Vous n`êtes pas autorisé à envoyé des fichiers de cette taille !'});
-      } else {
-        console.log('Validation user Basic est passé !');
-        next();
-      }
-    } catch (error) {
-      res.status(500).json({error});
-      }
-    };
+      res.status(401).json({ message: 'Vous n`êtes pas autorisé à envoyé des fichiers de cette taille !' });
+    } else {
+      console.log('Validation user Basic est passé !');
+      next();
+    }
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
 
