@@ -1,8 +1,6 @@
 const User = require('../models/user');
-// bcrypt est la pour hasher et sécuriser les échanges de password
-const bcrypt = require('bcrypt');
-// jsonwebtoken sert à générer et gérer les tokens
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt'); // Bcrypt est un module qui hashe les passwords et gère la sécurisation des mots de passe
+const jwt = require('jsonwebtoken'); // jwt gère le systeme de token
 const mongoose = require('mongoose');
 
 exports.signup = (req, res, next) => {

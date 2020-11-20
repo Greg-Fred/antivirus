@@ -2,6 +2,9 @@ const Virus = require('../models/virus');
 const User = require('../models/user');
 const cloudinary = require('../middleware/cloudinary');
 
+/* Ce controlleur s'occupe d'upload les fichiers sur cloudinary et d'enregistrer en DB un nouveau virus,
+  il s'occupe également de pousser le virus dans l'instance de l'utilisateur, faisant ainsi le lien entre leur relation OneToMany
+*/
 
 exports.uploaders = async (req, res, next) => {
   try {
@@ -19,7 +22,8 @@ exports.uploaders = async (req, res, next) => {
     await virus.save();
     user.virus.push(virus);
     await user.save();
-    res.status(201).json({ message: 'Virus créé !'})
+    res.status(201).json({ message: 'Virus créé !', virus: virus });
   } catch (err) {
-    res.status(500).json( {err});
-  }};
+    res.status(500).json({ err });
+  }
+};

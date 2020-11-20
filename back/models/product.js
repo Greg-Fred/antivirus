@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// Notre modèle Produit
+
 const ProductSchema = Schema({
   _id: Schema.Types.ObjectId,
   name: { type: String, required: true },
