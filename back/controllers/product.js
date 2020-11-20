@@ -1,9 +1,7 @@
 const Product = require('../models/product');
-const User = require('../models/user');
+// const User = require('../models/user');
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST);
-
-
 
 exports.getAll = async (req, res, next) => {
   const allProduct = await Product.find({});
@@ -30,5 +28,4 @@ exports.get = async (req, res, next) => {
     product: product,
     key: process.env.PUBLISHABLE_KEY
   })
-
 };
