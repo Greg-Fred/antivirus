@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // Notre modèle Produit
 
-const ProductSchema = Schema({
+const productSchema = Schema({
   _id: Schema.Types.ObjectId,
   name: { type: String, required: true },
   price: { type: Number, required: true },
@@ -11,4 +11,7 @@ const ProductSchema = Schema({
   image: { type: String }
 });
 
-module.exports = mongoose.model('Product', ProductSchema, "Products");
+
+const Product = mongoose.model('Product', productSchema, "Products");
+
+module.exports = Product;

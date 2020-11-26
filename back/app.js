@@ -7,7 +7,7 @@ const productRoutes = require('./routes/product');
 const path = require('path');
 const virusRoutes = require('./routes/virus');
 const webhookRoute = require('./routes/webhook');
-
+const { AppError, sendErrorHandler } = require('./lib/AppError');
 const app = express();
 
 ///// CONFIGURATION
@@ -51,5 +51,12 @@ app.use('/virus', virusRoutes);
 app.use('/product', productRoutes);
 
 
+app.use('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+app.use(sendErrorHandler);
+
 module.exports = app;
+
 

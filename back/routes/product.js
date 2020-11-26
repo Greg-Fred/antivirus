@@ -4,8 +4,8 @@ const productCtrl = require('../controllers/product');
 
 // Les routes des produits
 
-router.get('/', productCtrl.getAll);
-router.get('/:id', productCtrl.get);
+router.get('/', productCtrl.allProduct);
+router.get('/:id', productCtrl.oneProduct);
 
 module.exports = router
 
