@@ -1,45 +1,33 @@
-const User = require('../models/user');
-const bcrypt = require('bcrypt'); // Bcrypt est un module qui hashe les passwords et gère la sécurisation des mots de passe
-const jwt = require('jsonwebtoken'); // jwt gère le systeme de token
-const mongoose = require('mongoose');
+const { catchAsync, AppError } = require('../lib/AppError');
+const User = require('../models/user'); // jwt gère le systeme de token
 
-exports.signup = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10)
-    .then(hash => {
-      const user = new User({
-        _id: new mongoose.Types.ObjectId(),
-        email: req.body.email,
-        name: req.body.name,
-        password: hash
-      })
-      user.save()
-        .then(() => res.status(201).json({ mesage: 'Utilisateur créé ' }))
-        .catch(error => res.status(400).json({ error }))
-    })
-    .catch(error => res.status(500).json({ error }));
-};
+// CATCHASYNC function nous sert à rendre le code plus dry en déléguant le try catch à la fonction supérieur catchAsync.
 
-exports.login = (req, res, next) => {
-  User.findOne({ email: req.body.email })
-    .then(user => {
-      if (!user) {
-        return res.status(401).json({ error: 'Utilisateur non trouvé !' })
-      }
-      bcrypt.compare(req.body.password, user.password)
-        .then(valid => {
-          if (!valid) {
-            return res.status(401).json({ error: 'Mot de passe incorrect' })
-          }
-          res.status(200).json({
-            userId: user._id,
-            token: jwt.sign(
-              { userId: user._id },
-              'RANDOM_TOKEN_SECRET',
-              { expiresIn: '24h' }
-            )
-          });
-        })
-        .catch(error => res.status(500).json({ error }))
-    })
-    .catch(error => res.status(500).json({ error }));
-};
+
+const signup = catchAsync(async (req, res, next) => {
+  const user = new User(req.body);
+  await user.save();
+  res.status(201).json({
+    status: 'success',
+    user: user
+  });
+});
+
+
+const login = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    throw new AppError("This user don't exist", 401);
+  }
+  const isPasswordValid = await user.passwordComparaison(req.body.password);
+  if (!isPasswordValid) {
+    throw new AppError('Bad password', 401);
+  }
+  res.status(200).json({
+    status: 'success',
+    userId: user._id,
+    token: user.createToken()
+  });
+});
+
+module.exports = { login, signup };

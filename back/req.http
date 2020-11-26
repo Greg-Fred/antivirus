@@ -8,9 +8,9 @@ POST {{host}}/auth/signup http/1.1
 content-type: application/json
 
 {
-    "email": "greg@exemple.com",
-    "name": "proGREG",
-    "password": "azerty"
+    "email": "test@exemple.com",
+    "name": "refacto",
+    "password": "123"
     //"role": "pro"
 }
 
@@ -26,10 +26,9 @@ POST {{host}}/auth/login  HTTP/1.1
 content-type: application/json
 
 {
-
-    "email": "bonjour@mail.com",
-    "name": "greggo",
-    "password": "azerty"
+    "email": "testddgfgs@exemple.com",
+    "name": "refacto",
+    "password": "123"
 }
 
 
@@ -43,9 +42,10 @@ content-type: application/json
 
 {
 
-    "email": "tebi@mail.com",
-    "name": "proGREG",
-    "password": "azerty"
+    "email": "pro@exemple.com",
+    "name": "refacto",
+    "password": "123"
+
 }
 
 
