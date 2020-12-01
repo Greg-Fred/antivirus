@@ -6,14 +6,15 @@ const { catchAsync, AppError } = require('../lib/AppError');
 
 const allProduct = catchAsync(async (req, res, next) => {
   const allProduct = await Product.find({});
-  res.render('testproduct', {
+  res.render('productIndex', {
     products: allProduct
   })
 });
 
 // La methode get qui devrait être refacto afin de clairement assigner à chaque methode une fonction claire. Ici la méthode joue le double role d'afficher un produit et de créer une intention de paiment pour stripe. En chantier ##
 const oneProduct = catchAsync(async (req, res, next) => {
-  console.log('oneproduct dedans');
+  console.log("le req body oneproduct" + req.body)
+  console.log(req.cookies.email);
   const product = await Product.findById({ _id: req.params.id });
 
   const paymentIntent = await stripe.paymentIntents.create({

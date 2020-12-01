@@ -8,7 +8,9 @@ const productSchema = Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   description: [{ type: String, required: true, default: "Une description du produit" }],
-  image: { type: String }
+  image: { type: String },
+  productId: {type: String},
+  priceId: {type: String}
 });
 
 

@@ -68,7 +68,7 @@ const handleValidationErrorDB = err => {
 };
 
 const sendErrorHandler = (err, req, res, next) => {
-
+  console.log("c'est ici" + err);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
@@ -77,7 +77,7 @@ const sendErrorHandler = (err, req, res, next) => {
   } else if (process.env.NODE_ENV === 'production') {
 
     let error = err;
-
+    if (error.name === "JsonWebTokenError") res.render('login');
     if (error.name === 'CastError') error = handleCastErrorDB(error);
     // if (error.code === 11000) error = handleDuplicateFieldsDB(error);  // Gestion d'érreur non implanté, aprés quelques tests il me semble qu'elle est géré par les autres handler. )
     if (error.name === 'ValidationError')

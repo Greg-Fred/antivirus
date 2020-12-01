@@ -9,6 +9,7 @@ const virusRoutes = require('./routes/virus');
 const webhookRoute = require('./routes/webhook');
 const { AppError, sendErrorHandler } = require('./lib/AppError');
 const app = express();
+const cookieParser = require('cookie-parser');
 
 ///// CONFIGURATION
 
@@ -44,7 +45,14 @@ app.set('view engine', 'ejs');
 app.use('/stripe', bodyParser.raw({ type: 'application/json' }), webhookRoute);
 // On bodyPaser toute les requêtes ici - Il nous faudra comprendre plus précisément l'utiliter de la chose ***
 app.use(bodyParser.json());
+app.use(cookieParser());
 
+app.get('/', (req, res, next) => {
+  res.render('signin');
+});
+app.get('/login', (req, res, next) => {
+  res.render('login');
+});
 
 app.use('/auth', userRoutes);
 app.use('/virus', virusRoutes);

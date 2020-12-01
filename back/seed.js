@@ -14,12 +14,13 @@ seeder.connect("mongodb+srv://greg:P9Q933jRryW3PYUv@Cluster0.hlx2g.mongodb.net/c
 
   // On require ici les models sur lesquels on veut intervenir
   seeder.loadModels([
-    './models/product.js'
+    './models/product.js',
+    './models/user.js'
   ]);
 
 
   // On vide ici les instances des models require plus haut (db.drop)
-  seeder.clearModels(['Product'], function () {
+  seeder.clearModels(['Product','User'], function () {
     console.log('Les instances ont été supprimé !');
   });
 
@@ -39,17 +40,21 @@ const data = [
     'documents': [
       {
         '_id': new mongoose.Types.ObjectId(),
-        'name': '1 mois',
-        'price': 900,
-        'description': "Profitez d'un abonnement de 1 mois !",
-        'image': "https://www.keysworlds.com/media/catalog/product/cache/7ed5c9edeef724ede43badc51197dfdc/1/9/190912-c_85.jpg"
+        'name': 'FIXE',
+        'price': 1000,
+        'description': "Produit de tet : FIXE",
+        'image': "https://www.keysworlds.com/media/catalog/product/cache/7ed5c9edeef724ede43badc51197dfdc/1/9/190912-c_85.jpg",
+        'productId': 'prod_IT5JaXCy0Sc1yZ' ,
+        'priceId': 'price_1Hs99MDXZyAsNyKOuGhRGnM3'
       },
       {
         '_id': new mongoose.Types.ObjectId(),
-        'name': '1 an',
-        'price': 8000,
-        'description': "Profitez d'un abonnement de 12 mois !",
-        'image': "https://www.keysworlds.com/media/catalog/product/cache/7ed5c9edeef724ede43badc51197dfdc/1/9/190912-c_85.jpg"
+        'name': 'RECURENT',
+        'price': 10000,
+        'description': "Produit de test : RECURENT",
+        'image': "https://www.keysworlds.com/media/catalog/product/cache/7ed5c9edeef724ede43badc51197dfdc/1/9/190912-c_85.jpg",
+        'productId': 'prod_IT5MC4JdvWBLCw',
+        'priceId': 'price_1Hs9C6DXZyAsNyKOQMaI2zqU'
       }
     ]
   }

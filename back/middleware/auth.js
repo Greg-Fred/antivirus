@@ -1,19 +1,32 @@
 const jwt = require('jsonwebtoken'); // Module qui génère et gère les tokens
+const { catchAsync, AppError } = require('../lib/AppError');
+const User = require('../models/user');
 
-module.exports = (req, res, next) => {
-  try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-    const userId = decodedToken.userId;
+const auth = catchAsync( async (req, res, next) => {
+  const token = req.cookies.jwt;
+  console.log(req.cookies.email);
+  const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  const current_time = new Date().getTime() / 1000;
+  console.log(current_time);
+  console.log(decodedToken.exp);
+  if (current_time > decodedToken.exp) { console.log("expiré !") };
+  console.log(decodedToken);
+  const user = await User.findOne({email: req.cookies.email});
+  console.log(user);
+  // const token = req.headers.authorization.split(' ')[1];
 
-    if (req.body.userID && req.body.userId !== userId) {
-      throw 'invalid user ID';
-    } else {
-      next();
-    }
-  } catch {
-    res.status(401).json({
-      error: new Error('Invalid request!')
-    });
+  const userId = decodedToken.userId;
+
+
+  if (user._id && user._id != userId) {
+    console.log("Attention bug !");
+    throw new AppError("Invalid User id", 401);
+  } else {
+    next();
   }
-};
+  // res.status(401).json({
+  //   error: new Error('Invalid request!')
+  // });
+});
+
+module.exports = { auth };
