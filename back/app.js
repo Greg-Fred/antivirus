@@ -48,10 +48,10 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.get('/', (req, res, next) => {
-  res.render('signin');
-});
-app.get('/login', (req, res, next) => {
   res.render('login');
+});
+app.get('/signin', (req, res, next) => {
+  res.render('signin');
 });
 
 app.use('/auth', userRoutes);

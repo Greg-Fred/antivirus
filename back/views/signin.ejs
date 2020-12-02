@@ -24,19 +24,19 @@
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
             <label for="email-address" class="sr-only">Email address</label>
-            <input id="email-address" name="email" type="email" required
+            <input id="email-address" value=<%= `${Math.round(Math.random() * (100000 - 1) + 1)}@gmail.com`  %>  name="email" type="email" required
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
               placeholder="Ton Email">
           </div>
           <div>
             <label for="name" class="sr-only">name</label>
-            <input id="name" name="name" type="name" required
+            <input id="name" name="name" value=<%= (() => { return ["gregouille","fredaube","fiantouze","pimpoye","bitoune","dame_ginette","mange_merde"][Math.floor(Math.random()*["gregouille","fredaube","fiantouze","pimpoye","bitoune","dame_ginette","mange_merde"].length)] })() %>  type="name" required
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
               placeholder="Ton nom">
           </div>
           <div>
             <label for="password" class="sr-only">Password</label>
-            <input id="password" name="password" type="password" required
+            <input id="password" name="password" value="gregocaca" type="password" required
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
               placeholder="Ton mot de passe">
           </div>
@@ -46,7 +46,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center">
 
-              <a href="/login" class=" mx-auto ml-2 block font-bold text-blue-900">
+              <a href="/" class=" mx-auto ml-2 block font-bold text-blue-900">
                 Vous avez déja un compte ?
               </a>
             </div>
@@ -135,6 +135,7 @@
       if (apiResponse.status === 201) {
         displayError.textContent = "";
         displaySuccess.textContent = "Votre compte a été créé avec succé !";
+        window.location = `/auth/dashboard`;
       } else {
         console.log(apiResponse);
         const error = await apiResponse.json();

@@ -4,15 +4,11 @@ const User = require('../models/user');
 
 const auth = catchAsync( async (req, res, next) => {
   const token = req.cookies.jwt;
-  console.log(req.cookies.email);
   const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   const current_time = new Date().getTime() / 1000;
-  console.log(current_time);
-  console.log(decodedToken.exp);
   if (current_time > decodedToken.exp) { console.log("expiré !") };
-  console.log(decodedToken);
   const user = await User.findOne({email: req.cookies.email});
-  console.log(user);
+
   // const token = req.headers.authorization.split(' ')[1];
 
   const userId = decodedToken.userId;

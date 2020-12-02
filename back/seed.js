@@ -15,12 +15,13 @@ seeder.connect("mongodb+srv://greg:P9Q933jRryW3PYUv@Cluster0.hlx2g.mongodb.net/c
   // On require ici les models sur lesquels on veut intervenir
   seeder.loadModels([
     './models/product.js',
-    './models/user.js'
+    './models/user.js',
+    './models/virus.js'
   ]);
 
 
   // On vide ici les instances des models require plus haut (db.drop)
-  seeder.clearModels(['Product','User'], function () {
+  seeder.clearModels(['Product','User', "Virus"], function () {
     console.log('Les instances ont été supprimé !');
   });
 

@@ -10,6 +10,12 @@ const signup = catchAsync(async (req, res, next) => {
   const user = new User(req.body);
   await user.save();
   console.log('Utilisateur créé :' + user);
+
+  const token = user.createToken();
+  res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
+  res.cookie('email', user.email, { maxAge: 3600000 });
+
+
   res.status(201).json({
     status: 'success',
     user: user
