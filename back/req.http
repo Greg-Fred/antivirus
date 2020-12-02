@@ -8,9 +8,9 @@ POST {{host}}/auth/signup http/1.1
 content-type: application/json
 
 {
-    "email": "test@exemple.com",
-    "name": "refacto",
-    "password": "123"
+    "email": "fredotest@gmail.com",
+    "name": "fred",
+    "password": "1234"
     //"role": "pro"
 }
 
@@ -26,9 +26,9 @@ POST {{host}}/auth/login  HTTP/1.1
 content-type: application/json
 
 {
-    "email": "testddgfgs@exemple.com",
-    "name": "refacto",
-    "password": "123"
+    "email": "fredotest@gmail.com",
+    "name": "fred",
+    "password": "1234"
 }
 
 
@@ -53,8 +53,8 @@ content-type: application/json
 ///.......................................ETAPE 3
 /////////////////POST VIRUS(se logger avant///
 
-@authToken = {{login.response.body.token}}
-@userId = {{login.response.body.userId}}
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZmM2Mjc3MmY3ZTU3NzM5ODUxMGZmZjEiLCJpYXQiOjE2MDY4MjE3NDksImV4cCI6MTYwNjgyNTM0OX0.9NxiMSFeb9sCshQgL0UAWeEqCEJCxy-rpFwdtGUPXbA
+@userId = 5fc62772f7e577398510fff1
 //CLICK
 POST {{host}}/virus/upload HTTP/1.1
 Authorization: Bearer {{authToken}}

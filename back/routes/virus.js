@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const virusCtrl = require('../controllers/virus');
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 const multer = require('../middleware/multer');
 const validation = require('../middleware/validation');
 

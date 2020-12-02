@@ -13,7 +13,8 @@ const userSchema = Schema({
   password: { type: String, required: true },
   name: { type: String, required: true },
   role: { type: String, default: 'basic', enum: ['basic', 'pro'] },
-  virus: [{ type: Schema.Types.ObjectId, ref: 'Virus' }] // La ligne qui donne corp à la relation OneToMany avec les virus
+  virus: [{ type: Schema.Types.ObjectId, ref: 'Virus' }], // La ligne qui donne corp à la relation OneToMany avec les virus
+  customerId: {type: String}
 });
 
 // Pre-method pour BCRYPT
@@ -35,11 +36,12 @@ userSchema.methods.passwordComparaison = function (password) {
 
 //Création d'un token
 userSchema.methods.createToken = function () {
+  console.log(this);
   return jwt.sign(
     { userId: this._id },
-    'RANDOM_TOKEN_SECRET',
-    { expiresIn: '24h' }
-  )
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: '1h' }
+  );
 };
 
 // Application du module 'unique validator' pour mongoose **

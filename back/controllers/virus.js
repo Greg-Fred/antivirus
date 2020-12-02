@@ -8,20 +8,24 @@ const { catchAsync, AppError } = require('../lib/AppError');
 */
 
 const uploaders = catchAsync(async (req, res, next) => {
+  console.log('req.file' + req.file);
+
   const fileSize = req.file.size;
   const virusName = req.file.originalname.split(' ').join('_');
-  const userId = req.body.userId;
-  const user = await User.findOne({ _id: userId });
-  const result = await cloudinary.uploader.upload(req.file.path);
+
+  const user = await User.findOne({ email: req.cookies.email });
+  const reportStatus = (Math.round(Math.random() * (10 - 1)) + 1) > 6 ? "infected" : "valid" ;
+  // const result = await cloudinary.uploader.upload(req.file.path);
   const virus = new Virus({
     name: virusName,
-    user: userId,
+    user: user._id,
     size: fileSize,
-    cloudinary_id: result.public_id,
+    report: reportStatus
   });
   await virus.save();
   user.virus.push(virus);
   await user.save();
+  console.log('Virus créé : ' + virus);
   res.status(201).json({ message: 'Virus créé !', virus: virus });
 });
 
