@@ -5,7 +5,7 @@ const productCtrl = require('../controllers/product');
 // Les routes des produits
 
 router.get('/', productCtrl.allProduct);
-router.get('/:id', productCtrl.oneProduct);
+router.get('/:id', productCtrl.userInfo);
 
 module.exports = router
 

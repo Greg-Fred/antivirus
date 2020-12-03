@@ -1,20 +1,33 @@
 const { catchAsync, AppError } = require('../lib/AppError');
 const User = require('../models/user'); // jwt gère le systeme de token
 const Product = require('../models/product');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST);
 const cookieParser = require('cookie-parser');
 
 // CATCHASYNC function nous sert à rendre le code plus dry en déléguant le try catch à la fonction supérieur catchAsync.
 
 
 const signup = catchAsync(async (req, res, next) => {
-  const user = new User(req.body);
+  const email = req.body.email;
+  const password = req.body.password;
+  const name = req.body.name;
+  const user = new User({
+    email: email,
+    password: password,
+    name: name
+  });
   await user.save();
+  const stripeCustomerObject = await stripe.customers.create({
+    email: email,
+  });
+  user.customerId = stripeCustomerObject.id;
+  await user.save();
+
   console.log('Utilisateur créé :' + user);
 
   const token = user.createToken();
   res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
   res.cookie('email', user.email, { maxAge: 3600000 });
-
 
   res.status(201).json({
     status: 'success',
@@ -64,4 +77,19 @@ const payer = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { login, signup, dashboard, payer };
+const userInfo = catchAsync( async(req, res, next) => {
+  console.log(req.body);
+  const product = await Product.findById(req.body.productId);
+  const user = await User.findOne({email: req.cookies.email});
+  const priceId = product.priceId;
+  const customerId = user.customerId;
+
+  res.status(200).json({
+    priceId: priceId,
+    customerId: customerId,
+    salut: 'je suis la réponse'
+  });
+
+});
+
+module.exports = { login, signup, dashboard, payer, userInfo };

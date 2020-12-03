@@ -12,7 +12,7 @@ const allProduct = catchAsync(async (req, res, next) => {
 });
 
 // La methode get qui devrait être refacto afin de clairement assigner à chaque methode une fonction claire. Ici la méthode joue le double role d'afficher un produit et de créer une intention de paiment pour stripe. En chantier ##
-const oneProduct = catchAsync(async (req, res, next) => {
+const userInfo = catchAsync(async (req, res, next) => {
   console.log("le req body oneproduct" + req.body)
   console.log(req.cookies.email);
   const product = await Product.findById({ _id: req.params.id });
@@ -35,4 +35,4 @@ const oneProduct = catchAsync(async (req, res, next) => {
   })
 });
 
-module.exports = { allProduct, oneProduct };
+module.exports = { allProduct, userInfo };
