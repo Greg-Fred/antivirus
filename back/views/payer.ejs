@@ -590,7 +590,15 @@
             })
           });
         const response = await userInfo.json();
-        console.log(response);
+
+        const paymentMethod = await stripe
+          .createPaymentMethod({
+            type: 'card',
+            card: card,
+            billing_details: {
+              name: "billingName",
+            },
+          })
 
 
 
