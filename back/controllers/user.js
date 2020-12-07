@@ -3,6 +3,7 @@ const User = require('../models/user'); // jwt gère le systeme de token
 const Product = require('../models/product');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST);
 const cookieParser = require('cookie-parser');
+const util = require('util');
 
 // CATCHASYNC function nous sert à rendre le code plus dry en déléguant le try catch à la fonction supérieur catchAsync.
 
@@ -47,7 +48,7 @@ const login = catchAsync(async (req, res, next) => {
   }
   const token = user.createToken();
   res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
-  res.cookie('email', req.body.email, { maxAge: 3600000} );
+  res.cookie('email', req.body.email, { maxAge: 3600000 });
 
   res.status(200).json({
     status: 'success'
@@ -56,9 +57,9 @@ const login = catchAsync(async (req, res, next) => {
 
 const dashboard = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.cookies.email });
-  const populatedUser = await User.findOne({email: user.email})
+  const populatedUser = await User.findOne({ email: user.email })
     .populate('virus');
-
+  console.log(user);
   res.render('dashboard', {
     user: user,
     virus: populatedUser.virus
@@ -69,7 +70,9 @@ const dashboard = catchAsync(async (req, res, next) => {
 const payer = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.cookies.email });
   const product = await Product.find();
+
   res.render('payer', {
+    customerId: user.customerId,
     user: user,
     product: product,
     key: process.env.PUBLISHABLE_KEY
@@ -77,19 +80,5 @@ const payer = catchAsync(async (req, res, next) => {
   });
 });
 
-const userInfo = catchAsync( async(req, res, next) => {
-  console.log(req.body);
-  const product = await Product.findById(req.body.productId);
-  const user = await User.findOne({email: req.cookies.email});
-  const priceId = product.priceId;
-  const customerId = user.customerId;
 
-  res.status(200).json({
-    priceId: priceId,
-    customerId: customerId,
-    salut: 'je suis la réponse'
-  });
-
-});
-
-module.exports = { login, signup, dashboard, payer, userInfo };
+module.exports = { login, signup, dashboard, payer };
