@@ -46,7 +46,7 @@
           </div>
 
           <div class="text-sm">
-            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+            <a href="/forgotpwd" class="font-medium text-indigo-600 hover:text-indigo-500">
               Forgot your password?
             </a>
           </div>
@@ -79,7 +79,7 @@
         </div>
         <!-- component -->
         <div id="errordiv"
-          class=" hidden bg-teal-lightest border-t-4 border-teal rounded-b text-teal-darkest px-4 py-3 shadow-md my-2"
+          class="<%= ifNewPassword === true ? "bg-green-500" : "hidden"  %> bg-teal-lightest border-t-4 border-teal rounded-b text-teal-darkest px-4 py-3 shadow-md my-2"
           role="alert">
           <div class="flex">
             <svg class="h-6 w-6 text-teal mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -87,8 +87,8 @@
                 d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
             </svg>
             <div>
-              <p class="font-bold">Une erreur coco :</p>
-              <p id="card-errors" role="alert" class="text-sm"></p>
+              <p id="newpass" class="font-bold"><%= ifNewPassword === true ? "Bonne nouvelle !" : "Une erreur coco :"  %></p>
+              <p id="card-errors" role="alert" class="text-sm"><%= ifNewPassword === true ? "Votre mot de passe a été changé !" : ""  %> </p>
             </div>
           </div>
         </div>
@@ -105,7 +105,8 @@
     const displayError = document.querySelector('#card-errors');
     const displaySuccess = document.querySelector('#card-success');
 
-
+    const newPass = document.getElementById('newpass');
+    const ifNewPassword = "<%= ifNewPassword %>";
     const rmCheck = document.getElementById("remember_me");
     const emailInput = document.getElementById("email-address");
     const passwordInput = document.getElementById("password");
@@ -142,6 +143,8 @@
     });
 
     form.addEventListener('submit', async (event) => {
+      displayError.textContent = "";
+      errorSys.classList.add("hidden");
       console.log('le bouton marche');
       const email = document.querySelector('#email-address').value;
       const password = document.querySelector('#password').value;
@@ -160,7 +163,7 @@
           body: JSON.stringify({
             email: email,
             password: password
-          });
+          })
         });
       console.log(apiResponse.status);
       if (apiResponse.status === 200) {
@@ -174,10 +177,10 @@
         console.log(apiResponse);
         const error = await apiResponse.json();
         console.log(error.message);
-        errorSys.classList.remove("hidden");
 
         displaySuccess.textContent = "";
         displayError.textContent = error.message;
+        errorSys.classList.remove("hidden");
       }
 
 

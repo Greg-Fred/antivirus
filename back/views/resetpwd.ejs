@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <img class="mx-44 h-32 w-auto" src="https://www.flaticon.com/svg/static/icons/svg/3014/3014229.svg"
+          alt="Workflow">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-700">
+          Change ton mot de passe monsieur <font style="opacity:0.7;"><%= user.name  %></font> !
+        </h2>
+
+      </div>
+      <form id="form" class="mt-8 space-y-6">
+
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="password" class="sr-only">New password</label>
+            <input id="password" name="password" type="password" required
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              placeholder="New password" autofocus=true onkeyup='check();'>
+          </div>
+          <div>
+            <label for="confirm" class="sr-only">Confirm password</label>
+            <input id="confirm" name="confirm" type="password" required
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              placeholder="Confirm password" onkeyup='check();'>
+              <span id='message'></span>
+          </div>
+        </div>
+
+
+
+
+        <div>
+
+
+          <button disabled type="submit" id="submit"
+            class=" text-opacity-80 font-extrabold text-gray-900  group relative w-full flex justify-center py-2 px-4 bg-yellow-300 border border-transparent text-sm font-medium rounded-md text-white  hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+              <!-- Heroicon name: lock-closed -->
+              <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+
+              </svg>
+            </span>
+            Change password !
+          </button>
+
+        </div>
+        <!-- component -->
+        <div id="errordiv"
+          class=" hidden bg-teal-lightest border-t-4 border-teal rounded-b text-teal-darkest px-4 py-3 shadow-md my-2"
+          role="alert">
+          <div class="flex">
+            <svg class="h-6 w-6 text-teal mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path
+                d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+            </svg>
+            <div>
+              <p class="font-bold">Une erreur coco :</p>
+              <p id="card-errors" role="alert" class="text-sm"></p>
+            </div>
+          </div>
+        </div>
+        <!-- <div id="card-errors" role="alert"></div> -->
+        <div id="card-success" role="alert"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const form = document.querySelector('#form');
+    const message = document.getElementById('message');
+    const button = document.getElementById('submit');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const password = document.querySelector('#password').value;
+      const token = window.location.pathname.split('/')[3];
+      console.log(password);
+      console.log(token);
+
+      if (message.innerText == "matching") {
+        const changePassword = await fetch("/auth/reset/password", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token: token,
+            password: password
+        })
+      });
+      console.log(changePassword);
+      const response = await changePassword.json();
+      console.log(response.message);
+      console.log("bonjour");
+      window.location = '/' + '?npwd=true'
+
+    }});
+
+    const check = function () {
+      if (document.getElementById('password').value == document.getElementById('confirm').value) {
+        message.style.color = 'green';
+        message.innerHTML = 'matching';
+        button.disabled = false;
+      } else {
+        message.style.color = 'red';
+        message.innerHTML = 'not matching';
+        button.disabled = true;
+      }
+    }
+  </script>
+
+
+
+</body>
+
+</html>

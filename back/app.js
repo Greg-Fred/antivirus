@@ -1,17 +1,27 @@
+//Requires :
+//Modules et config
 require('dotenv').config({ path: '.env' });
 const express = require('express');
 const bodyParser = require('body-parser');
-const userRoutes = require('./routes/user');
 const mongoose = require('mongoose');
-const productRoutes = require('./routes/stripe');
-const stripeRoutes = require('./routes/stripe');
+const cookieParser = require('cookie-parser');
+const nodemailer = require('nodemailer');
 const path = require('path');
-const virusRoutes = require('./routes/virus');
-const webhookRoute = require('./routes/webhook');
+const url = require('url');
 const { AppError, sendErrorHandler } = require('./lib/AppError');
 const app = express();
-const cookieParser = require('cookie-parser');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST);
+//Routers
+const virusRoutes = require('./routes/virus');
+const webhookRoute = require('./routes/webhook');
+const stripeRoutes = require('./routes/stripe');
+const productRoutes = require('./routes/stripe');
+const userRoutes = require('./routes/user');
+const emailRoutes = require('./routes/email');
+
+
+
+
+
 
 ///// CONFIGURATION
 
@@ -35,6 +45,18 @@ app.use((req, res, next) => {
   next();
 });
 
+// Configuration du transport pour nodemailer :
+// create reusable transporter object using the default SMTP transport
+// const transporter = nodemailer.createTransport({
+//   port: 465,               // true for 465, false for other ports
+//   host: "smtp.gmail.com",
+//   auth: {
+//     user: 'fedde.leg@gmail.com',
+//     pass: 'Granolax3484',
+//   },
+//   secure: true,
+// });
+
 // On configure ici le chemin des vues et le système de gestion des vues (ejs)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -53,11 +75,21 @@ app.use((req, res, next) => {
     bodyParser.json()(req, res, next);
   }
 });
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get('/', (req, res, next) => {
-  res.render('login');
+  const queryObject = url.parse(req.url, true).query;
+  let ifNewPassword = queryObject.npwd == 'true' ? true : false;
+  console.log(queryObject);
+  console.log(ifNewPassword);
+  res.render('login', { ifNewPassword: ifNewPassword });
 });
+
+app.get('/forgotpwd', (req, res, next) => {
+  res.render('recoverymail');
+});
+
 app.get('/signin', (req, res, next) => {
   res.render('signin');
 });
@@ -66,10 +98,9 @@ app.use('/payment', stripeRoutes)
 app.use('/auth', userRoutes);
 app.use('/virus', virusRoutes);
 app.use('/product', productRoutes);
+app.use('/email', emailRoutes);
 
-//_____________________________________________________STRIPE______________________________________________________________________
-
-
+//_____________________________________________________nodemailer test___________________________________________________________
 
 
 

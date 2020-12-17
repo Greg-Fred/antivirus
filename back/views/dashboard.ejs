@@ -602,14 +602,15 @@
         console.log(postFile);
         alertmessage.textContent = "Fichier ajouté !";
         alertmessage.classList.remove("hidden");
-        document.location.reload();
       } else {
         const error = await postFile.json();
         console.log(error.message);
         alertmessage.textContent = error.message;
         alertmessage.classList.remove("hidden");
       };
-
+      setTimeout(() => {
+        document.location.reload();
+      }, 2000);
 
 
     });
