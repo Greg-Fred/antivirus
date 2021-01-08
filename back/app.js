@@ -29,10 +29,13 @@ const emailRoutes = require('./routes/email');
 // app.use(express.static('static_stripe_views'));
 
 //Configuration de push temporaire pour heroku
-app.use(express.static(path.join(__dirname, '../build')))
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../build'))
-});
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static('/front/build'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/back/build/index.html'))
+  });
+}
+
 
 // On connect le module mongoose à la DB
 mongoose.connect(process.env.DATABASE,

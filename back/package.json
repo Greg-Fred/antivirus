@@ -8,8 +8,10 @@
     "ngrokb": "ngrok http 3000",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node seed.js",
-    "start": "yarn build:css && node ./bin/www",
-    "tailwind:css": "postcss public/styles/tailwind.css -o public/styles/style.css"
+    "start build css": "yarn build:css && node ./bin/www",
+    "tailwind:css": "postcss public/styles/tailwind.css -o public/styles/style.css",
+    "start":  "node back/server.js",
+    "heroku-postbuild": "cd front && npm install && npm run build"
   },
   "author": "",
   "license": "ISC",
@@ -43,5 +45,8 @@
     "mongoose-seed": "^0.6.0",
     "stylelint-config-recommended": "^3.0.0",
     "tailwindcss": "^1.9.6"
+  },
+  "engines": {
+    "node": "15.2.1"
   }
 }
