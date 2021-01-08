@@ -26,7 +26,13 @@ const emailRoutes = require('./routes/email');
 ///// CONFIGURATION
 
 // 'Express static' sert à l'utilisation de pages statiques dans le dossier 'static_stripe_views'
-app.use(express.static('static_stripe_views'));
+// app.use(express.static('static_stripe_views'));
+
+//Configuration de push temporaire pour heroku
+app.use(express.static(path.join(__dirname, '../build')))
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build'))
+});
 
 // On connect le module mongoose à la DB
 mongoose.connect(process.env.DATABASE,
@@ -58,8 +64,8 @@ app.use((req, res, next) => {
 // });
 
 // On configure ici le chemin des vues et le système de gestion des vues (ejs)
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'ejs');
 
 
 ///// NOS ROUTES

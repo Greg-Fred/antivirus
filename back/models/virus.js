@@ -10,7 +10,7 @@ const virusSchema = Schema({
   size: { type: Number, required: true },
   post_date: { type: Date, default: Date.now },
   report: {type: String},
-  type: {type: String}
+  mimetype: {type: String}
 });
 
 virusSchema.plugin(uniqueValidator);

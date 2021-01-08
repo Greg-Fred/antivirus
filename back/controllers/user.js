@@ -25,9 +25,29 @@ const emailValidation = catchAsync(async (user, next) => {
 
 // ETAPE 1 : CREATION DE L'UTILISATEUR ET ENVOIE DE L'EMAIL DE VALIDATION (POST)
 const signup = catchAsync(async (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  const name = req.body.name;
+
+  // Système temporaire qui regarde si la requete vient de react ou du vieux système de front
+
+  let emailRequest;
+  let passwordRequest;
+  let nameRequest;
+
+  if (req.body.data === undefined) {
+    emailRequest = req.body.email;
+    passwordRequest = req.body.password;
+    nameRequest = req.body.name
+  } else {
+    emailRequest = req.body.data.newMail;
+    passwordRequest = req.body.data.newPdm;
+    nameRequest = req.body.data.newName;
+  }
+
+  // En mode réact c'est le req.body.data.x qui fonctionne
+
+
+  const email = emailRequest;
+  const password = passwordRequest;
+  const name = nameRequest;
   const user = new User({
     email: email,
     password: password,
@@ -51,6 +71,30 @@ const signup = catchAsync(async (req, res, next) => {
     status: 'success',
     user: user
   });
+
+
+  // Ici encore le système est fait pour répondre à react ou au système ancien de front
+
+  if (req.body.data !== undefined) {
+    res.status(201).json({
+      status: 'success',
+      user: user
+    })
+  } else {
+    const token = user.createToken();
+
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
+    res.cookie('email', emailRequest, { maxAge: 3600000 });
+    res.status(200).json({
+      status: 'success'
+    });
+  }
+
+  //////////////:
+
+
+
+
 });
 ///////////
 
@@ -82,11 +126,29 @@ const accountValidation = catchAsync(async (req, res, next) => {
 //////////////////////////////////////////////////////////////////////////////// LOGIN (POST)
 
 const login = catchAsync(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
+
+  // Système temporaire qui regarde si la requete vient de react ou du vieux système de front
+  console.log("ici est l'entrée dans le login");
+
+  let emailRequest;
+  let passwordRequest;
+
+  if (req.body.data === undefined) {
+    emailRequest = req.body.email;
+    passwordRequest = req.body.password;
+  } else {
+    emailRequest = req.body.data.newMail;
+    passwordRequest = req.body.data.newPdm;
+  }
+
+  // En mode réact c'est le req.body.data.x qui fonctionne
+
+  const user = await User.findOne({ email: emailRequest });
   if (!user) {
     throw new AppError("This user don't exist", 401);
   }
-  const isPasswordValid = await user.passwordComparaison(req.body.password);
+  const isPasswordValid = await user.passwordComparaison(passwordRequest);
+  console.log(isPasswordValid);
   if (!isPasswordValid) {
     throw new AppError('Bad password', 401);
   } else if (user.status === "pending") {
@@ -97,13 +159,28 @@ const login = catchAsync(async (req, res, next) => {
        - Penser à proposer le renvoie */
     throw new AppError('Your account was create but need to be validate from your mail adress', 403);
   } else {
-    const token = user.createToken();
-    res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
-    res.cookie('email', req.body.email, { maxAge: 3600000 });
 
-    res.status(200).json({
-      status: 'success'
-    });
+    // Ici encore le système est fait pour répondre à react ou au système ancien de front
+
+    if (req.body.data !== undefined) {
+      res.status(200).json({
+        status: 'success'
+      })
+    } else {
+      const token = user.createToken();
+
+
+      res.status(200).send({
+        id: user._id,
+        username: user.name,
+        email: user.email,
+        role: user.role,
+        accessToken: token,
+        virus: user.virus
+      })
+    }
+
+    //////////////:
   }
 });
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -112,14 +189,22 @@ const login = catchAsync(async (req, res, next) => {
 ////////////////////////////////////////////////////////////////// DASHBOARD (GET) (ce vers quoi pointe le login - probablement obsolète dans react)
 
 const dashboard = catchAsync(async (req, res, next) => {
-  const user = await User.findOne({ email: req.cookies.email });
-  const populatedUser = await User.findOne({ email: user.email })
-    .populate('virus');
-  console.log(user);
-  res.render('dashboard', {
-    user: user,
-    virus: populatedUser.virus
-  });
+  console.log("j'arrive dans le dashboard");
+  console.log("je console log le body");
+  console.log(req.body);
+  console.log(req.body.user.name);
+  const user = req.body.user;
+  const userVirus = await User.findOne({_id: user._id}).populate('virus');
+
+  console.log(userVirus.virus);
+
+  res.status(200).send({
+    virus: userVirus.virus
+  })
+  // res.render('dashboard', {
+  //   user: user,
+  //   virus: populatedUser.virus
+  // });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////

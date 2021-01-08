@@ -4,9 +4,9 @@ const nodemailer = require('nodemailer');
 //credentials du compte smtp
 
 const smtpCredentials = {
-  name: "Roel Pagac",
-  email: "roel83@ethereal.email",
-  password: "jjC2x3N3yTaRCbCdss"
+  name: "Scotty Gleichner",
+  email: "minnie15@ethereal.email",
+  password: "gfHa7sd69mGXBFqwfn"
 };
 
 //configuration du serveur smtp

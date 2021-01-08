@@ -69,12 +69,14 @@ userSchema.path('email').validate(function isEmailValid(email) {
 
 // Bcrypt vérification
 userSchema.methods.passwordComparaison = function (password) {
+  console.log('test');
+  console.log(password);
   return bcrypt.compare(password, this.password);
 };
 
 //Création d'un token
 userSchema.methods.createToken = function () {
-  console.log(this);
+  console.log("bonj");
   return jwt.sign(
     { userId: this._id },
     process.env.ACCESS_TOKEN_SECRET,

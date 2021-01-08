@@ -60,6 +60,18 @@ const handleCastErrorDB = err => {
 //   return new AppError(message, 400);
 // };
 
+const handJwtError = err => {
+  if (err.message === "jwt expired") {
+
+    const message = err.message;
+    return new AppError(message, 400);
+
+  } else if (err.message === "invalid token") {
+    const message = err.message;
+     return new AppError(message, 400);
+  }
+};
+
 const handleValidationErrorDB = err => {
   const errors = Object.values(err.errors).map(el => el.message);
 
@@ -68,7 +80,7 @@ const handleValidationErrorDB = err => {
 };
 
 const sendErrorHandler = (err, req, res, next) => {
-  console.log("c'est ici" + err);
+  console.log("Error Handler BackEnd" + err);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
@@ -77,7 +89,8 @@ const sendErrorHandler = (err, req, res, next) => {
   } else if (process.env.NODE_ENV === 'production') {
 
     let error = err;
-    if (error.name === "JsonWebTokenError") res.render('login');
+    if (error.name === "TokenExpiredError") error = handJwtError(error);
+    if (error.name === "JsonWebTokenError") error = handJwtError(error);
     if (error.name === 'CastError') error = handleCastErrorDB(error);
     // if (error.code === 11000) error = handleDuplicateFieldsDB(error);  // Gestion d'érreur non implanté, aprés quelques tests il me semble qu'elle est géré par les autres handler. )
     if (error.name === 'ValidationError')
