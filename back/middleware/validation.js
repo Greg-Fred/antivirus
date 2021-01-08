@@ -79,13 +79,19 @@ Ensuite je fais un if/elsif/else pour vérifier :
 3. Et le else pour dire que c'est ok on passe à la suite.
 */
 module.exports = async (req, res, next) => {
-  const user = await User.findOne({ email: req.cookies.email });
+  console.log("dans la validation");
+  console.log(req.body);
+  const user = await User.findOne({ _id: req.body.userId });
+  console.log(user);
+  req.body.user = user;
   if (user.role === "pro") {
     console.log('Utilisateur pro est dans la place !');
     return next();
   }
   try {
+    console.log("dans le try de la validation");
     const virusUploadLimit = await virusPerDayLimitation(user._id);
+    console.log(req.file);
     // Vu que j'ai modifié le return avec un objet je dois ici pour retrouver le bouleen, c'est poussif mais ça marche.
     if (virusUploadLimit.response === false) {
       // ce qui me permet ici de récupérer dans l'objet le nombre d'heure restante. Que j'affiche dans la réponse au client.

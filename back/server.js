@@ -2,10 +2,10 @@ const http = require('http');
 const app = require('./app');
 const ngrok = require('ngrok');
 
-app.set('port', process.env.PORT || 3000 );
+app.set('port', process.env.PORT || 5000 );
 const server = http.createServer(app);
 
-server.listen(process.env.PORT || 3000 );
+server.listen(process.env.PORT || 5000 );
 
 // ngrok.connect({
 //   proto: 'http',

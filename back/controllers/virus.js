@@ -8,19 +8,26 @@ const { catchAsync, AppError } = require('../lib/AppError');
 */
 
 const uploaders = catchAsync(async (req, res, next) => {
+  console.log('dans le uploader');
+  console.log(req.body);
   console.log('req.file' + req.file);
-
+  console.log("le fichier ressemble à :");
+  console.log(req.file);
+  console.log("LEXTANSION EST :");
+  console.log(req.file.mimetype.split('/')[1]);
+  const fileType = req.file.mimetype.split('/')[1];
   const fileSize = req.file.size;
   const virusName = req.file.originalname.split(' ').join('_');
 
-  const user = await User.findOne({ email: req.cookies.email });
+  const user = await User.findOne({ email: req.body.user.email });
   const reportStatus = (Math.round(Math.random() * (10 - 1)) + 1) > 6 ? "infected" : "valid" ;
   // const result = await cloudinary.uploader.upload(req.file.path);
   const virus = new Virus({
     name: virusName,
     user: user._id,
     size: fileSize,
-    report: reportStatus
+    report: reportStatus,
+    mimetype: fileType
   });
   await virus.save();
   user.virus.push(virus);
