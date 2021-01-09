@@ -10,8 +10,8 @@
     "seed": "node seed.js",
     "start build css": "yarn build:css && node ./bin/www",
     "tailwind:css": "postcss public/styles/tailwind.css -o public/styles/style.css",
-    "start":  "node back/server.js",
-    "heroku-postbuild": "cd front && npm install && npm run build"
+    "start":  "node server.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "",
   "license": "ISC",
