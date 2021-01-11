@@ -27,27 +27,16 @@ const emailValidation = catchAsync(async (user, next) => {
 const signup = catchAsync(async (req, res, next) => {
 
   // Système temporaire qui regarde si la requete vient de react ou du vieux système de front
+  console.log("TEST TEST");
+  console.log(req.body);
 
-  let emailRequest;
-  let passwordRequest;
-  let nameRequest;
-
-  if (req.body.data === undefined) {
-    emailRequest = req.body.email;
-    passwordRequest = req.body.password;
-    nameRequest = req.body.name
-  } else {
-    emailRequest = req.body.data.newMail;
-    passwordRequest = req.body.data.newPdm;
-    nameRequest = req.body.data.newName;
-  }
 
   // En mode réact c'est le req.body.data.x qui fonctionne
 
 
-  const email = emailRequest;
-  const password = passwordRequest;
-  const name = nameRequest;
+  const email = req.body.email;
+  const password = req.body.password;
+  const name = req.body.username;
   const user = new User({
     email: email,
     password: password,
@@ -67,28 +56,15 @@ const signup = catchAsync(async (req, res, next) => {
   // res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
   // res.cookie('email', user.email, { maxAge: 3600000 });
 
-  res.status(201).json({
-    status: 'success',
-    user: user
-  });
-
-
   // Ici encore le système est fait pour répondre à react ou au système ancien de front
 
-  if (req.body.data !== undefined) {
-    res.status(201).json({
-      status: 'success',
-      user: user
-    })
-  } else {
     const token = user.createToken();
 
-    res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
-    res.cookie('email', emailRequest, { maxAge: 3600000 });
     res.status(200).json({
-      status: 'success'
+      status: 'success',
+      user
     });
-  }
+
 
   //////////////:
 

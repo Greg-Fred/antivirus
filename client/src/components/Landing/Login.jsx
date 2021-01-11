@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Redirect, useHistory } from "react-router-dom";
 
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 
 
 
 
 // LE COMPOSANT LOGIN
-const Login = () => {
+const Login = ( props ) => {
 
+  const {toggleRegistration, toggleLogin} = props;
   const user = AuthService.getCurrentUser();
 
 
@@ -29,6 +30,14 @@ const Login = () => {
   const handleOnchange = (e) => {
     setCredentials(v => ({ ...credentials, [e.target.name]: e.target.value }));
     setErrorMessage(v => ({ ...errorMessage, [e.target.name]: '' }));
+  };
+
+  const handleSwitchModal = async (e) => {
+    e.preventDefault();
+
+    await toggleLogin();
+    toggleRegistration();
+
   };
 
   // Call api vers le serveur pour se connecter
@@ -90,7 +99,7 @@ const Login = () => {
 
   return (
 
-    <div className=" flex items-center h-screen justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className=" flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full  space-y-8">
         <div>
           <img className="mx-44 h-32 w-auto" src="https://www.flaticon.com/svg/static/icons/svg/2484/2484786.svg"
@@ -142,7 +151,7 @@ const Login = () => {
           <div class="flex items-center justify-between">
             <div class="flex items-center">
 
-              <a href="#" class=" mx-auto ml-2 block font-bold text-blue-900">
+              <a href="#" onClick={handleSwitchModal} class=" mx-auto ml-2 block font-bold text-blue-900">
                 Pas de compte ?
             </a>
             </div>
