@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
 // Module de routage
 import { Route, Switch, Link } from 'react-router-dom';
-import Login from './pages/Login';
+
 import Dashboard from './pages/Dashboard';
+import Landing from './pages/Landing';
 
 
 
@@ -14,7 +15,7 @@ const RouterAlternative = () => {
 
 
       <Switch>
-        <Route exact path={["/", "/login"]} component={Login} />
+        <Route exact path="/" component={Landing}/>
         <Route exact path="/dashboard" component={Dashboard} />
       </Switch>
 

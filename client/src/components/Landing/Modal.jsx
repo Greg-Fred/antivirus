@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 
-import LoginForm from '../components/LoginForm'
-import RegistrationForm from '../components/RegistrationForm'
-import NewAccountMessage from '../components/NewAccountMessage'
+import Login from './Login';
+import Register from './Register';
+import NewAccountMessage from './NewAccountMessage';
 
-const Modal = ({ setNewAccountName, newAcountName, toggleAccountMessage, isAccountMessageOn, isRegistrationShowing, hideRegistration, isLoginShowing, hideLogin}) => {
+const Modal = ({ welcomeAccount, newAccountName, toggleAccountMessage, isAccountMessageOn, isRegistrationShowing, hideRegistration, isLoginShowing, hideLogin}) => {
 
 const modalArea = useRef();
+
+
+
+
 
 let toggleDisplay;
 
@@ -15,12 +19,12 @@ let component;
 
 if (isRegistrationShowing) {
   toggleDisplay = hideRegistration;
-  component = <RegistrationForm setNewName={setNewAccountName} newAccountMessage={toggleAccountMessage} isLoginShowing={isRegistrationShowing} toggleLogin={hideLogin} toggleRegistration={hideRegistration} isRegistrationShowing={isLoginShowing} />;
+  component = <Register setNewName={welcomeAccount} newAccountMessage={toggleAccountMessage} isLoginShowing={isRegistrationShowing} toggleLogin={hideLogin} toggleRegistration={hideRegistration} isRegistrationShowing={isLoginShowing} />;
 } else if ( isLoginShowing) {
   toggleDisplay = hideLogin
-  component = <LoginForm isLoginShowing={isRegistrationShowing} toggleLogin={hideLogin} toggleRegistration={hideRegistration} isRegistrationShowing={isLoginShowing} />;
+  component = <Login  toggleLogin={hideLogin} toggleRegistration={hideRegistration} />;
 } else if (isAccountMessageOn) {
-  component = <NewAccountMessage data={newAcountName} />
+  component = <NewAccountMessage data={newAccountName} />
   toggleDisplay = toggleAccountMessage;
 }
 

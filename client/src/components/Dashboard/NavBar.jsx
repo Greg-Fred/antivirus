@@ -43,10 +43,10 @@ const NavBar = (props) => {
 
     <nav className="px-4 flex justify-between bg-white h-16 border-b-2">
       <div className="h-16 flex items-center">
-        <Link className="h-16 flex items-center
+        <div className="h-16 flex items-center
 					focus:text-orange-500" to='/'>
           <img className="h-8 w-8" src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg" alt="" />
-        </Link>
+        </div>
         <h1 className=" ml-10">{`Compte : ${user.role}`}</h1>
       </div>
 
