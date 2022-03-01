@@ -1,5 +1,3 @@
-//Requires :
-//Modules et config
 require('dotenv').config({ path: '.env' });
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -25,10 +23,6 @@ const emailRoutes = require('./routes/email');
 
 ///// CONFIGURATION
 
-// 'Express static' sert à l'utilisation de pages statiques dans le dossier 'static_stripe_views'
-// app.use(express.static('static_stripe_views'));
-
-//Configuration de push temporaire pour heroku
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, '/client/build')));
   app.get('*', (req, res) => {
@@ -54,27 +48,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Configuration du transport pour nodemailer :
-// create reusable transporter object using the default SMTP transport
-// const transporter = nodemailer.createTransport({
-//   port: 465,               // true for 465, false for other ports
-//   host: "smtp.gmail.com",
-//   auth: {
-//     user: 'fedde.leg@gmail.com',
-//     pass: 'Granolax3484',
-//   },
-//   secure: true,
-// });
-
-// On configure ici le chemin des vues et le système de gestion des vues (ejs)
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
+///// ROUTES
 
 
-///// NOS ROUTES
-
-
-// Cette route gère le webhook de stripe. Pour des raisons propre à stripe nous devons appliquer bodyParser.raw à la requête. Ce qui explique sa position 'au dessus' du app.use(bodyParser.json()) suivant qui s'applique à toute les requêtes. A travailler... ***
 app.use('/stripe', bodyParser.raw({ type: 'application/json' }), webhookRoute);
 // On bodyPaser toute les requêtes ici - Il nous faudra comprendre plus précisément l'utiliter de la chose ***
 app.use((req, res, next) => {
@@ -108,13 +84,6 @@ app.use('/auth', userRoutes);
 app.use('/virus', virusRoutes);
 app.use('/product', productRoutes);
 app.use('/email', emailRoutes);
-
-//_____________________________________________________nodemailer test___________________________________________________________
-
-
-
-//______________________________________________________________________________________________________________________________
-
 
 
 app.use('*', (req, res, next) => {
